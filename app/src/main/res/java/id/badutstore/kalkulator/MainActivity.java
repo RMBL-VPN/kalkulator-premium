@@ -6,33 +6,44 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Hindari crash tema di beberapa ROM
+        try {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        } catch (Throwable ignored) {
+        }
+
         super.onCreate(savedInstanceState);
 
+        // Layout dasar dulu supaya activity tidak blank/crash total
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(16, 19, 28));
+        setContentView(root);
+
         try {
-            // Status / navigation bar — dibungkus try agar tidak crash di ROM aneh
             try {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 getWindow().setStatusBarColor(Color.rgb(16, 19, 28));
                 getWindow().setNavigationBarColor(Color.rgb(16, 19, 28));
-                if (Build.VERSION.SDK_INT < 30) {
-                    getWindow().getDecorView().setSystemUiVisibility(0);
-                }
             } catch (Throwable ignored) {
             }
 
             WebView webView = new WebView(this);
             webView.setBackgroundColor(Color.rgb(16, 19, 28));
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            webView.setLayoutParams(new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT));
 
             WebSettings settings = webView.getSettings();
             settings.setJavaScriptEnabled(true);
@@ -44,31 +55,30 @@ public class MainActivity extends Activity {
             settings.setBuiltInZoomControls(false);
             settings.setDisplayZoomControls(false);
             if (Build.VERSION.SDK_INT >= 26) {
-                settings.setSafeBrowsingEnabled(false);
+                try {
+                    settings.setSafeBrowsingEnabled(false);
+                } catch (Throwable ignored) {
+                }
             }
 
             webView.setWebViewClient(new WebViewClient());
-            setContentView(webView);
+            root.addView(webView);
             webView.loadUrl("file:///android_asset/index.html");
 
         } catch (Throwable e) {
-            // WebView / system error → jangan biarkan force-close
             TextView tv = new TextView(this);
             tv.setText(
                     "Gagal memuat kalkulator.\n\n" +
-                    "1. Buka Settings → Apps\n" +
-                    "2. Cari \"Android System WebView\" atau \"Chrome\"\n" +
-                    "3. Enable + Update dari Play Store\n" +
-                    "4. Buka aplikasi ini lagi\n\n" +
-                    "Detail: " + e.getClass().getSimpleName() +
+                    "Update/Enable Android System WebView atau Chrome,\n" +
+                    "lalu buka aplikasi ini lagi.\n\n" +
+                    e.getClass().getSimpleName() +
                     (e.getMessage() != null ? "\n" + e.getMessage() : "")
             );
             tv.setTextColor(Color.WHITE);
-            tv.setBackgroundColor(Color.rgb(16, 19, 28));
             tv.setPadding(48, 48, 48, 48);
             tv.setGravity(Gravity.CENTER);
             tv.setTextSize(15f);
-            setContentView(tv);
+            root.addView(tv);
         }
     }
 }
