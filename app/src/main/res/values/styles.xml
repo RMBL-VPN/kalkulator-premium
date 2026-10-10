@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme framework murni, tanpa AppCompat — paling kompatibel -->
-    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+    <!-- Theme paling sederhana & kompatibel semua ROM -->
+    <style name="AppTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">#10131C</item>
-        <item name="android:colorBackground">#10131C</item>
-        <item name="android:statusBarColor">#10131C</item>
-        <item name="android:navigationBarColor">#10131C</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowActionModeOverlay">true</item>
     </style>
 </resources>
