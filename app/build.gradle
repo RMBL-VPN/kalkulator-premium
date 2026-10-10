@@ -4,26 +4,25 @@ plugins {
 
 android {
     namespace 'id.badutstore.kalkulator'
-    compileSdk 35
+    compileSdk 34
 
     defaultConfig {
         applicationId 'id.badutstore.kalkulator'
         minSdk 23
-        targetSdk 35
+        targetSdk 34
         versionCode 2
-        versionName '1.0.1'
+        versionName '1.1'
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildTypes {
         debug {
-            debuggable true
+            minifyEnabled false
         }
-
         release {
             minifyEnabled false
         }
